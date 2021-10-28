@@ -1,0 +1,21 @@
+;; shadow-cljs configuration
+{:source-paths
+ ["src/main"
+  "src/test"]
+ :dependencies [[funcool/httpurr "2.0.0"]
+                [com.taoensso/timbre "5.1.2"]
+                ;; [com.andrewmcveigh/cljs-time "0.5.2"]
+                ]
+ :builds
+ {:cloud-function {:target :node-library
+                   :output-to "dist/function/index.js"
+                   :exports {:handleRequest gcp-monitoring-to-teams/handle-request}
+                   ;; There appears to be an issue with advanced in promesa/httpurr
+                   :compiler-options {:infer-externs :auto
+                                      :optimizations :simple}}
+  :node {:target :node-script
+         :output-to "./dist/node/index.js"
+         :main gcp-monitoring-to-teams/start
+         :devtools {:after-load gcp-monitoring-to-teams/reload}}
+  :test {:target :node-test
+         :output-to "./dist/test.js"}}}
