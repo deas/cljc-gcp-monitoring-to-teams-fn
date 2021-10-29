@@ -1,6 +1,6 @@
 (ns gcp-monitoring-to-teams
   (:require [taoensso.timbre :as timbre
-             :refer [debug info warn error fatal debugf infof warnf errorf fatalf]]
+             :refer [infof warnf]]
             [clojure.string :refer [upper-case]]
             [httpurr.client.node :as http]
             [promesa.core :as p]
@@ -34,13 +34,11 @@
                           ?err (assoc :err (timbre/stacktrace ?err {:stacktrace-fonts {}})))]
         (to-json output-data)))})
 
-#_(defn decode
-    [response]
-    (update response :body #(js->clj (js/JSON.parse %))))
 
-;; https://docs.microsoft.com/de-de/graph/api/resources/chatmessage?view=graph-rest-1.0
-;; https://docs.microsoft.com/de-de/outlook/actionable-messages/message-card-reference
-(defn gcp-to-teams [payload origin]
+(defn gcp-to-teams
+ "https://docs.microsoft.com/de-de/graph/api/resources/chatmessage?view=graph-rest-1.0
+  https://docs.microsoft.com/de-de/outlook/actionable-messages/message-card-reference"
+  [payload]
   (let [incident (:incident payload)
         started_at (* 1000 (:started_at incident))
         ended_at (when-let [ended_at (:ended_at incident)] (* 1000 ended_at))
@@ -54,14 +52,13 @@
                        {:title "Condition" :value condition_name}
                        {:title "Started at" :value (to-date-string started_at)}]
                 resource_name (conj {:title "Resource name" :value resource_name})
-                ended_at (conj {:title "Ended at" :value (to-date-string ended_at)})
-                origin (conj {:title "Origin" :value origin}))
+                ended_at (conj {:title "Ended at" :value (to-date-string ended_at)}))
 
         body (cond-> [{:type "TextBlock" :text title :color (if (= "open" state) "attention" "default")}
                       {:type "FactSet"
                        :facts facts}]
                summary (conj {:type "TextBlock" :text summary}))]
-    (infof "Creating teams message for incident %s, state is " incident_id state)
+    (infof "Creating teams message for incident %s, state is %s" incident_id state)
     {:type "message"
      :importance (if (= "open" state) "urgent" "normal")
      :attachments [{:contentType "application/vnd.microsoft.card.adaptive"
@@ -76,7 +73,6 @@
   [req res]
   (let [auth-token (.. js/process -env -AUTH_TOKEN)
         query (.-query req)
-        origin (goog.object/get query "origin")
         teams-endpoint (goog.object/get query "teams-endpoint")
         req-auth-token (goog.object/get query "auth-token")
         auth-valid (= auth-token req-auth-token)]
@@ -87,7 +83,7 @@
             payload-valid (and incident_id #_started_at)] ;; The test from the UI does not send started_at
         (infof "Got incident %s, started at %s" incident_id started_at)
         (cond
-          payload-valid (let [teams-payload (-> (gcp-to-teams payload origin) to-json)
+          payload-valid (let [teams-payload (-> (gcp-to-teams payload) to-json)
                               opts {:timeout 2000}
                               teams-req {:headers {"Content-Type" "application/json"
                                                    "Content-Length" (count teams-payload)}
@@ -97,9 +93,9 @@
                                         (infof "Received %s" r)
                                         (doto res
                                           (.status (:status r))
-                                          (.send "Success"))))
+                                          (.send "Status forwarded"))))
                               (p/catch (fn [r]
-                                         (warnf "Received" r)
+                                         (warnf "Received %s" r)
                                          (doto res
                                            (.status 502)
                                            (.send "Exception"))))))
