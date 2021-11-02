@@ -1,4 +1,4 @@
-const handlerProxy = require("nbb-cljs-adapter");
+const handlerProxy = require("nbb-cloud-functions");
 
 module.exports = {
   handler: handlerProxy("example.cljs", "handler"),
