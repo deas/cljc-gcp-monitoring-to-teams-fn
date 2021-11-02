@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^1.9.0",
+    "nbb-cloud-functions": "file:./src/node/nbb-cloud-functions",
     "strftime": "^0.10.0"
   },
   "scripts": {

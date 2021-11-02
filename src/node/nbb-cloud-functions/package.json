@@ -1,0 +1,23 @@
+{
+  "name": "nbb-cloud-functions",
+  "version": "0.0.3",
+  "description": "NPM package to enable running Clojurescript code on Google Cloud Functions NodeJS runtime",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vharmain/nbb-cloud-functions.git"
+  },
+  "keywords": ["Clojurescript", "aws-Lambda", "nbb"],
+  "author": "Valtteri Harmainen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vharmain/nbb-cloud-functions/issues"
+  },
+  "homepage": "https://github.com/vharmain/nbb-cloud-functions#readme",
+  "dependencies": {
+    "nbb": "^0.0.107"
+  }
+}
