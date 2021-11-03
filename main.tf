@@ -37,7 +37,7 @@ module "monitoring_to_teams" {
   source      = "terraform-google-modules/event-function/google"
   version     = "2.0.0"
   description = "Sends notifications to MS Teams"
-  entry_point = "handleRequest"
+  entry_point = "handle"
   # service_account_email = 
   trigger_http = true # endpoint returned as https_trigger_url
   /*

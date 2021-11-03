@@ -11,7 +11,8 @@
     "strftime": "^0.10.0"
   },
   "scripts": {
-    "serve": "AUTH_TOKEN=s3cr3t functions-framework --signature-type=http --source ./dist/function --target=handleRequest",
+    "serve": "AUTH_TOKEN=s3cr3t functions-framework --signature-type=http --source ./dist/function --target=handle",
+    "serve-nbb": "AUTH_TOKEN=s3cr3t functions-framework --signature-type=http --source ./src --target=handle",
     "start": "node dist/node/index.js",
     "pretest": "shadow-cljs compile :test",
     "test": "node dist/test.js",

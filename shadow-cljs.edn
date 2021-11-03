@@ -9,7 +9,7 @@
  :builds
  {:cloud-function {:target :node-library
                    :output-to "dist/function/index.js"
-                   :exports {:handleRequest gcp-monitoring-to-teams/handle-request}
+                   :exports {:handle gcp-monitoring-to-teams/handle-request}
                    ;; There appears to be an issue with advanced in promesa/httpurr
                    :compiler-options {:infer-externs :auto
                                       :optimizations :simple}}
