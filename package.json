@@ -1,5 +1,6 @@
 {
   "name": "cljc-gcp-monitoring-to-teams-fn",
+  "main": "./src/main/index-nbb.mjs",
   "version": "0.0.1",
   "private": true,
   "devDependencies": {
@@ -7,7 +8,7 @@
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^1.9.0",
-    "nbb-cloud-functions": "file:./src/node/nbb-cloud-functions",
+    "nbb": "0.1.1",
     "strftime": "^0.10.0"
   },
   "scripts": {
